@@ -1,0 +1,224 @@
+   <section class="home-section">
+        <?php include('nav.php');?>
+        <h4 id="datos"></h4>
+        <div class="container-fluid rounded">
+            <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 px-2 mt-1">
+                    <div class="card">
+                        <?php //muy importante
+                    include("txtBanner.php");
+                    ?>
+                        <div class="card-body">
+
+                            <?php
+			if(isset($_GET['aksi']) == 'delete'){
+				// escaping, additionally removing everything that could be (html/javascript-) code
+				$nik = mysqli_real_escape_string($con,(strip_tags($_GET["nik"],ENT_QUOTES)));
+				$cek = mysqli_query($con, "SELECT * FROM patient WHERE numeroIdentificacion='$nik'");
+				if(mysqli_num_rows($cek) == 0){
+					echo '<div class="alert alert-info alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> No se encontraron datos.</div>';
+				}else{
+					$delete = mysqli_query($con, "DELETE FROM patient WHERE numeroIdentificacion='$nik'");
+					if($delete){
+						echo '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> Datos eliminado correctamente.</div>';
+					}else{
+						echo '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> Error, no se pudo eliminar los datos.</div>';
+					}
+				}
+			}
+			?>
+
+                            <input type="text" name="email_padrino" id="email_padrino"
+                                value="<?php echo htmlspecialchars($_SESSION["username"]); ?>" style="display:none">
+
+                            <style>
+                            th {
+                                width: 100px;
+                            }
+                            </style>
+                        </div>
+                        
+                        <div class="container">
+                            <div class="card text-center">
+                                <div class="card-header alert-info">
+                                    <i class="fas fa-user-injured"></i> LISTA DE PACIENTES <i
+                                        class="fas fa-user-injured"></i>
+                                </div>
+                                <div class="card-body">
+                                      <table id=""
+                                        class="display table table-hover table-bordered table-lg table-responsive">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Documento</th>
+                                                <th class="w-25">Nombre</th>
+                                                <th class="w-25">Apellidos</th>
+                                                <th class="w-10">Celular</th>
+                                                <th class="w-50">Doctor</th>
+                                                <th class="w-50"> </th>
+                                                <th class="w-50"> </th>
+                                                <th class="w-50"> </th>
+                                                <th class="w-50"> </th>
+                                            </tr>
+                                        </thead>
+                                        <?php
+					
+				                      $buscar = $_POST["search"];
+                $usaurio= htmlspecialchars($_SESSION["numeroIdentificacion"]);
+				if($filter){
+					$sql = mysqli_query($con, "SELECT * FROM patient WHERE numeroIdentificacion like '%$buscar%' ORDER BY nombre ASC");
+				}else{
+					$sql = mysqli_query($con, "SELECT * FROM patient WHERE numeroIdentificacion like '%$buscar%' ORDER BY nombre ASC");
+				}
+				if(mysqli_num_rows($sql) == 0){
+					echo '<tr><td colspan="8">No hay datos.</td></tr>';
+				}else{
+					$no = 1;
+					while($row = mysqli_fetch_assoc($sql)){
+						echo '
+                        <tbody>
+						<tr style="font-size:12px">
+						    <td>'.$no.'</td>
+                            <td>'.$row['numeroIdentificacion'].'</td>
+                            <td>'.$row['nombre'].'</td>
+                            <td>'.$row['apellidos'].'</td>
+                            <td>'.$row['telefonoCelular'].'</td>
+                            <td>'.$row['doctorAsignado'].'</td>
+                           
+                           <td><a href="historiaClinica.php?nik='.$row['numeroIdentificacion'].'"title="Realizar historia clínica" class="btn btn-outline-success btn-sm" "><span class="fa fa-laptop-medical" aria-hidden="true"></span></a></td>
+                            <td><a href="valoration.php?nik='.$row['numeroIdentificacion'].'" title="Realizar valoración clínica" class="btn btn-outline-info btn-sm"><span class="fa fa-feather-alt" aria-hidden="true"></span></a></td>
+                            
+                           <td><a href="edit.php?nik='.$row['numeroIdentificacion'].'" title="Editar paciente" class="btn btn-outline-warning btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a></td>
+                           <td><a href="main.php?aksi=delete&nik='.$row['numeroIdentificacion'].'" title="Eliminar paciente" onclick="return confirm(\'Esta seguro de borrar al paciente '.$row['nombre']." ".$row['apellidos'].'?\')" class="btn btn-outline-danger btn-sm"><span class="fa fa-trash" aria-hidden="true"></span></a></td>
+                           
+                        </tr>
+                        </tbody>
+					
+						';
+						$no++;
+					}
+				}
+				?>
+                                    </table>
+                                </div>
+                                <div class="card-footer text-muted alert-info">
+                                    <i class="fas fa-clock"></i>
+                                    <?php
+                                    $DateAndTime = date('m-d-Y h:i:s a', time());  
+                                    echo "Actualizado $DateAndTime.";
+                                    ?>
+                                </div>
+                                
+                            </div>
+                            
+                            <br>
+                                      <?php
+			if(isset($_GET['aksiHistory']) == 'deleteHistory'){
+				// escaping, additionally removing everything that could be (html/javascript-) code
+				$nik = mysqli_real_escape_string($con,(strip_tags($_GET["nik"],ENT_QUOTES)));
+				$cek = mysqli_query($con, "SELECT * FROM history WHERE codigo='$nik'");
+				if(mysqli_num_rows($cek) == 0){
+					echo '<div class="alert alert-info alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> No se encontraron datos.</div>';
+				}else{
+					$deleteHistorys = mysqli_query($con, "DELETE FROM history WHERE codigo='$nik'");
+					if($deleteHistorys){
+						echo '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> Historia clínica '.$row['codigo'].' eliminada correctamente.</div>';
+					}else{
+						echo '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> Error, no se pudo eliminar los datos.</div>';
+					}
+				}
+			}
+			?>
+                            <div class="card text-center">
+                                <div class="card-header alert-info">
+                                    <i class="fa fa-laptop-medical"></i> LISTA DE HISTORIAS CLÍNICAS <i
+                                        class="fa fa-laptop-medical"></i>
+                                </div>
+                                <div class="card-body">
+                                      <table id=""
+                                        class="display table table-hover table-bordered table-lg table-responsive">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Código</th>
+                                                <th>Documento</th>
+                                                <th class="w-25">Nombre</th>
+                                                <th class="w-25">Apellidos</th>
+                                                <th class="w-10">fecha creación</th>
+                                                <th class="w-50">Doctor</th>
+                                                <th class="w-50"> </th>
+                                                <th class="w-50"> </th>
+                                            </tr>
+                                        </thead>
+                                        <?php
+					
+				                            $buscar = $_POST["search"];
+                                            $usaurio= htmlspecialchars($_SESSION["numeroIdentificacion"]);
+				                            if($filter){
+					                         $sql = mysqli_query($con, "SELECT * FROM history, patient WHERE history.numeroIdentificacion = patient.numeroIdentificacion;");
+				                            }else{
+					                         $sql = mysqli_query($con, "SELECT * FROM history, patient WHERE history.numeroIdentificacion = patient.numeroIdentificacion;");
+				                            }
+				                            if(mysqli_num_rows($sql) == 0){
+					                            echo '<tr><td colspan="8">No hay datos.</td></tr>';
+				                            }else{
+					                            $no = 1;
+					                        while($row = mysqli_fetch_assoc($sql)){
+						                        echo '
+                                                <tbody>
+						                            <tr style="font-size:12px">
+						                                 <td>'.$no.'</td>
+                                                         <td>'.$row['codigo'].'</td>
+                                                         <td>'.$row['numeroIdentificacion'].'</td>
+                                                         <td>'.$row['nombre'].'</td>
+                                                         <td>'.$row['apellidos'].'</td>
+                                                         <td>'.$row['fechaCreacion'].'</td>
+                                                         <td>'.$row['doctorCreator'].'</td>
+                                                         <td><a href="printHistory.php?nik='.$row['numeroIdentificacion'].'&code='.$row['codigo'].'&idDoct='.$row['doctorCreator'].'" title="Imprimir historia clínica" class="btn btn-outline-primary btn-sm"><span class="fa fa-print" aria-hidden="true"></span></a></td>
+                                                         <td><a href="main.php?aksiHistory=deleteHistory&nik='.$row['codigo'].'" title="Eliminar paciente" onclick="return confirm(\'Esta seguro de borrar la historia clinica: '.$row['codigo'].' correspondiente al paciente '.$row['nombre']." ".$row['apellidos'].'?\')" class="btn btn-outline-danger btn-sm"><span class="fa fa-trash" aria-hidden="true"></span></a></td>
+                                                    </tr>
+                                                </tbody>';
+						                    $no++;
+					                            }
+				                            }
+				        ?>
+                                    </table>
+                                </div>
+                                <div class="card-footer text-muted alert-info">
+                                    <i class="fas fa-clock"></i>
+                                    <?php
+                                    $DateAndTime = date('m-d-Y h:i:s a', time());  
+                                    echo "Actualizado $DateAndTime.";
+                                    ?>
+                                </div>
+                                
+                            </div>
+                            <br>
+                        </div>
+                        
+                        <?php include('pagination.php');
+                    ?>
+                    </div>
+                    
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 px-2 mt-1">
+                    <div class="card shadow p-2 mb-1 bg-white rounded">
+                        <?php include('reloj.php');?>
+                    </div>
+                    <div class="card shadow p-2 mb-1 bg-white rounded">
+                        <?php include('calendar.php');?>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        </div>
+
+        </div>
+
+        <br><br>
+
+        <?php include('footer.php');
+    ?>
+    </section>
