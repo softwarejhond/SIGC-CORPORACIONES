@@ -174,7 +174,7 @@ require_once "conexion.php";
                                 <?php
                     $query = mysqli_query ($con, "SELECT * FROM activities");
                     while ($consulta = mysqli_fetch_array($query)) {
-                     echo '<option value="'.$consulta[actividad].'">'.$consulta[actividad].'</option>';
+                     echo '<option value="'.$consulta['actividad'].'">'.$consulta['actividad'].'</option>';
                         }
                 ?>
                             </select>
