@@ -40,7 +40,7 @@ require_once "conexion.php";
     }
 
     #areaImprimir {
-        background-image: url('./images/bak.png');
+        background-image: url('./images/back.png');
         background-origin: content-box;
         background-size: 100% 100%;
     }
