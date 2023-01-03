@@ -99,7 +99,7 @@ require_once "conexion.php";
                                                 <?php echo date('d-m-Y');?></div>
                                         </div>
 
-                                        <img src="images/logo.jpeg" alt='Logo' width="200px">
+                                        <img src="images/logo.jpeg" alt='Logo' width="150px">
                                         <br>
                                         <br>
                                         <h3 style="text-align: center;">CERTIFICADO AL CUMPLIMIENTO DEL SERVICIO SOCIAL</h3>
