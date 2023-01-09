@@ -67,7 +67,7 @@
             <li class="profile">
            
                 <a href="https://agenciaeaglesoftware.com/" target="_blank">
-                    <img src="images/LogoLetraBlanca.png" width="70px" alt="Eagle Software">
+                    <img src="images/eagleLogo.png" width="70px" alt="Eagle Software">
                     <span class="links_name">Visitar</span>
                 </a>
                 <span class="tooltip">Visitar</span>

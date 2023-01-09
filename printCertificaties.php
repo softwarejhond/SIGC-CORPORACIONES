@@ -40,7 +40,7 @@ require_once "conexion.php";
     }
 
     #areaImprimir {
-        background-image: url('./images/bak.png');
+        background-image: url('./images/back.png');
         background-origin: content-box;
         background-size: 100% 100%;
     }
@@ -91,7 +91,7 @@ require_once "conexion.php";
                                         <?php
                                             $queryCompany = mysqli_query($con,"SELECT nombre,nit FROM company");
                                              while ($empresaLog = mysqli_fetch_array($queryCompany)) {
-                                                echo '<p class="text-right" style="font-size:12px">'.$empresaLog[nombre].'</p>';
+                                                echo '<p class="text-right" style="font-size:12px">'.$empresaLog['nombre'].'</p>';
                                                 }
                                         ?>
                                         <div class="row">
@@ -99,7 +99,8 @@ require_once "conexion.php";
                                                 <?php echo date('d-m-Y');?></div>
                                         </div>
 
-                                        <img src="images/logo.png" alt='Logo' width="500px">
+                                        <img src="images/logo.jpeg" alt='Logo' width="150px">
+                                        <br>
                                         <br>
                                         <h3 style="text-align: center;">CERTIFICADO AL CUMPLIMIENTO DEL SERVICIO SOCIAL</h3>
                                         <br>
@@ -107,8 +108,8 @@ require_once "conexion.php";
                               
                                             $queryCompany = mysqli_query($con,"SELECT nombre,nit FROM company");
                                             while ($empresaLog = mysqli_fetch_array($queryCompany)) {
-                                             echo '<h3  class="card-text">'.$empresaLog[nombre].'</h3>';
-                                             echo '<h4  class="card-text">NIT: '.$empresaLog[nit].'</h4>';
+                                             echo '<h3  class="card-text">'.$empresaLog['nombre'].'</h3>';
+                                             echo '<h4  class="card-text">NIT: '.$empresaLog['nit'].'</h4>';
                                              }
                                              ?>
                                     </div>
@@ -153,16 +154,16 @@ require_once "conexion.php";
                                             <?php
                                              $queryPresident = mysqli_query($con,"SELECT nombre,dependencia,telefono FROM users WHERE dependencia='Representante Legal'");
                                             while ($presidenteFirma = mysqli_fetch_array($queryPresident)) {
-                                             echo '<h4 class="text-left"">'.$presidenteFirma[nombre].'</h4>
-                                                <h4 class="text-left"">'.$presidenteFirma[dependencia].'</h4>
-                                                 <h4 class="text-left"">'.$presidenteFirma[telefono].'</h4>
+                                             echo '<h4 class="text-left"">'.$presidenteFirma['nombre'].'</h4>
+                                                <h4 class="text-left"">'.$presidenteFirma['dependencia'].'</h4>
+                                                 <h4 class="text-left"">'.$presidenteFirma['telefono'].'</h4>
                                                 ';
                                                 }
                                              ?>
                                             <?php
                                                 $queryCompany = mysqli_query($con,"SELECT nombre,nit FROM company");
                                                 while ($empresaLog = mysqli_fetch_array($queryCompany)) {
-                                                  echo ' <h4 class="text-left"">'.$empresaLog[nombre].'</h4>';
+                                                  echo ' <h4 class="text-left"">'.$empresaLog['nombre'].'</h4>';
                                                  }
                                                 ?>
 
@@ -172,7 +173,7 @@ require_once "conexion.php";
                               
                                             $queryCompany = mysqli_query($con,"SELECT * FROM company");
                                              while ($empresaLog = mysqli_fetch_array($queryCompany)) {
-                                              echo '<p  class="text-center">'.$empresaLog[direccion].' - '.$empresaLog[nombre].'<br>'.' Teléfono '.$empresaLog[telefono].' E-Mail: '.$empresaLog[email].'</p>';
+                                              echo '<p  class="text-center">'.$empresaLog['direccion'].' - '.$empresaLog['nombre'].'<br>'.' Teléfono '.$empresaLog['telefono'].' E-Mail: '.$empresaLog['email'].'</p>';
                                              }
                                           ?>
                                     </div>
