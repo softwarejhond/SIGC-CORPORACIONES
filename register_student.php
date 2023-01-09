@@ -88,7 +88,7 @@ require_once "conexion.php";
 			?>
 
             <form method="post" class="was-validated" id="form">
-                <h2 style="color:#fff">REGISTRO -- DE INFORMACIÓN PARA EL SERVICIO SOCIAL</h2>
+                <h2 style="color:#fff">REGISTRO DE INFORMACIÓN PARA EL SERVICIO SOCIAL</h2>
                 <b style="color:yellow">Tenga en cuenta que todos los campos son obligatorios y serán utilizados
                     exclusivamente para agilizar el proceso de tu servicio social dentro de la Junta de Acción Comunal Marco Fidel Suárez</b>
                 <br><br>
