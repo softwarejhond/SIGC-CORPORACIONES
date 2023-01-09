@@ -88,7 +88,7 @@ require_once "conexion.php";
 			?>
 
             <form method="post" class="was-validated" id="form">
-                <h2 style="color:#fff">REGISTRO DE INFORMACIÓN PARA EL SERVICIO SOCIAL</h2>
+                <h2 style="color:#fff">REGISTRO DE INFORMACIÓN PARA EL SERVICIO SOCIAL..</h2>
                 <b style="color:yellow">Tenga en cuenta que todos los campos son obligatorios y serán utilizados
                     exclusivamente para agilizar el proceso de tu servicio social dentro de la LA Corporación Artistica
                     de la Comuna (COARDECOM)</b>
@@ -175,7 +175,7 @@ require_once "conexion.php";
                                 <?php
                     $query = mysqli_query ($con, "SELECT * FROM activities");
                     while ($consulta = mysqli_fetch_array($query)) {
-                     echo '<option value="'.$consulta[actividad].'">'.$consulta[actividad].'</option>';
+                     echo '<option value="'.$consulta['actividad'].'">'.$consulta['actividad'].'</option>';
                         }
                 ?>
                             </select>
@@ -426,8 +426,12 @@ $(document).ready(function() {
 <script>
 function enviar() {
     var checkBox = document.getElementById("myCheck");
+    var templateParams = {
+    name: 'James',
+    notes: 'Check this out!'
+};
     if (checkBox.checked == true) {
-        emailjs.sendForm('default_service', 'template_tbtr69r', document.getElementById('form'))
+        emailjs.send('default_service', 'template_tbtr69r', templateParams)
             .then(function(response) {
                 console.log('SUCCESS!', response.status, response.text);
             }, function(error) {
@@ -438,6 +442,36 @@ function enviar() {
     }
 
 }
+</script>
+
+<script>
+    var xhr = new XMLHttpRequest(),
+body = JSON.stringify(
+    {
+        "messages": [
+            {
+                "channel": "whatsapp",
+                "to": "14752661178",
+                "content": "Test WhatsApp Message Text"
+            },
+            {
+                "channel": "sms",
+                "to": "14752661178",
+                "content": "Test SMS Message Text"
+            }
+        ]
+    }
+);
+xhr.open('POST', 'https://platform.clickatell.com/v1/message', true);
+xhr.setRequestHeader('Content-Type', 'application/json');
+xhr.setRequestHeader('Authorization', 'SyRXtu8OQC6FzkMhn7kxSg==');
+xhr.onreadystatechange = function(){
+    if (xhr.readyState == 4 && xhr.status == 200) {
+        console.log('success');
+    }
+};
+
+xhr.send(body);
 </script>
 
 </html>
