@@ -1,18 +1,47 @@
 <?php
 include "conexion.php";
 ?>
-<?
+<?php
 session_set_cookie_params(60*60*24*15); //determinamos el tiempo de la sesion iniciada
 //iniciamos la sesion
 session_start();?>
 <?php if (isset($_SESSION['loggedin'])): ?>
 <?php
 $filtro = htmlspecialchars($_SESSION["username"]);
-$query = mysqli_query($con,"SELECT nombre FROM users WHERE username like '%$filtro%'");
-while ($userLog = mysqli_fetch_array($query)) {
- $pacient=$userLog[nombre];
- }
+$query = mysqli_prepare($con, "SELECT nombre FROM users WHERE username = ? LIMIT 1");
+$pacient = "";
+if ($query) {
+    mysqli_stmt_bind_param($query, "s", $filtro);
+    mysqli_stmt_execute($query);
+    mysqli_stmt_bind_result($query, $nombreUsuario);
+    if (mysqli_stmt_fetch($query)) {
+        $pacient = $nombreUsuario;
+    }
+    mysqli_stmt_close($query);
+}
 $generoFemenino = mysqli_query($con, "SELECT * FROM estudents WHERE genero='Femenino'");
+$totalEstudiantes = 0;
+$totalUsuarios = 0;
+$totalHistorias = 0;
+
+function safeCountRows($con, $tableName) {
+    try {
+        $result = mysqli_query($con, "SELECT COUNT(*) AS total FROM `" . $tableName . "`");
+        if ($result && $rowMetric = mysqli_fetch_assoc($result)) {
+            return (int)$rowMetric['total'];
+        }
+    } catch (Throwable $e) {
+        return 0;
+    }
+    return 0;
+}
+
+$totalEstudiantes = safeCountRows($con, 'estudents');
+$totalUsuarios = safeCountRows($con, 'users');
+$totalHistorias = safeCountRows($con, 'history');
+
+$bulkStatus = $_SESSION['bulk_pdf_status'] ?? null;
+unset($_SESSION['bulk_pdf_status']);
 
 ?>
 <!DOCTYPE html>
@@ -37,6 +66,45 @@ $generoFemenino = mysqli_query($con, "SELECT * FROM estudents WHERE genero='Feme
         <?php include 'nav.php';?>
         <h4 id="datos"></h4>
         <div class="container-fluid rounded">
+            <?php if ($bulkStatus) { ?>
+            <div class="alert alert-<?php echo htmlspecialchars($bulkStatus['type']); ?> mt-2">
+                <?php echo htmlspecialchars($bulkStatus['message']); ?>
+            </div>
+            <?php } ?>
+
+            <div class="row mt-2 mb-2">
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                    <div class="card p-3">
+                        <small class="text-muted">Estudiantes registrados</small>
+                        <h3 class="mb-0"><?php echo $totalEstudiantes; ?></h3>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                    <div class="card p-3">
+                        <small class="text-muted">Usuarios del sistema</small>
+                        <h3 class="mb-0"><?php echo $totalUsuarios; ?></h3>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                    <div class="card p-3">
+                        <small class="text-muted">Historias clinicas</small>
+                        <h3 class="mb-0"><?php echo $totalHistorias; ?></h3>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                    <div class="card p-3">
+                        <small class="text-muted">Accion rapida</small>
+                        <form action="bulk_generate_pdfs.php" method="post" class="mt-2">
+                            <button type="submit" class="btn btn-primary btn-sm btn-block">
+                                <i class="fa fa-file-pdf"></i> Generar y enviar PDF masivo
+                            </button>
+                        </form>
+                        <a href="smtp_config.php" class="btn btn-outline-secondary btn-sm btn-block mt-2">
+                            <i class="fa fa-cog"></i> Configurar SMTP
+                        </a>
+                    </div>
+                </div>
+            </div>
            
             <div class="row">
                 
@@ -60,8 +128,8 @@ $generoFemenino = mysqli_query($con, "SELECT * FROM estudents WHERE genero='Feme
                                         aria-controls="home" aria-selected="true">Estudiantes</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                     <a class="nav-link active" href="#" data-toggle="tab" role="tab"
-                                         aria-selected="true" tittle="Exportar tabla a exccel"><i class="fa fa-file-excel alert-success"></i> Exportar tabla</a>
+                                     <a class="nav-link" href="#" onclick="tableToExcel(document.getElementById('myTable'), 'Lista de estudiantes'); return false;" role="tab"
+                                         aria-selected="false" title="Exportar tabla a excel"><i class="fa fa-file-excel text-success"></i> Exportar tabla</a>
                                 </li>
                                <!-- <li class="nav-item" role="presentation">
                                     <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
@@ -120,7 +188,10 @@ var tableToExcel = (function() {
             })
         }
     return function(table, name) {
-        if (!table.nodeType) table = document.getElementById(myTable)
+        if (!table.nodeType) table = document.getElementById('myTable')
+        if (!table) {
+            return;
+        }
         var ctx = {
             worksheet: name || 'Lista de estudiantes',
             table: table.innerHTML
@@ -130,25 +201,23 @@ var tableToExcel = (function() {
 })()
 </script>
 
-<?php else:
-?>
+<?php else: ?>
 <script LANGUAGE="javascript">
 location.href = "index.php";
 </script>
-<?php endif;
-?>
-<script>
-1
-2
-3
-$(document).ready(function() {
-    $('#myTable').DataTable();
-});
-</script>
+<?php endif; ?>
 
 <script>
 $(document).ready(function() {
-    $('table.display').DataTable();
+    if ($.fn.DataTable) {
+        if ($('#myTable').length) {
+            $('#myTable').DataTable();
+        }
+
+        if ($('table.display').length) {
+            $('table.display').DataTable();
+        }
+    }
 });
 </script>
 

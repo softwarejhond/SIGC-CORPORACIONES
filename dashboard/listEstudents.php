@@ -19,14 +19,10 @@
              </thead>
              <tbody>
                  <?php
-
-$buscar = $_POST["buscador"];
-$usaurio = htmlspecialchars($_SESSION["numeroIdentificacion"]);
-if ($filter) {
-    $sql = mysqli_query($con, "SELECT * FROM estudents WHERE numeroIdentificacion like '%$buscar%' ORDER BY id ASC");
-} else {
-    $sql = mysqli_query($con, "SELECT * FROM estudents WHERE numeroIdentificacion like '%$buscar%' ORDER BY id ASC");
+if (!isset($con)) {
+    include_once __DIR__ . '/../conexion.php';
 }
+$sql = mysqli_query($con, "SELECT * FROM estudents ORDER BY id DESC");
 if (mysqli_num_rows($sql) == 0) {
     echo '<tr><td colspan="8">No hay datos.</td></tr>';
 } else {
@@ -42,7 +38,7 @@ if (mysqli_num_rows($sql) == 0) {
                             <td>' . $row['telefono'] . '</td>
                             <td>' . $row['email'] . '</td>
 
-                            <td><a href="printCertificaties.php?nik=' .$row['numeroIdentificacion'].'"id="send" title="Imprimir certificado" class="btn btn-outline-success btn-sm"><span class="fa fa-print" aria-hidden="true"></span></a></td>
+                            <td><a href="printCertificaties.php?nik=' .$row['numeroIdentificacion'].'" id="send" title="Imprimir certificado" class="btn btn-outline-success btn-sm"><span class="fa fa-print" aria-hidden="true"></span></a></td>
                           <td><a href="#" title="Actualizar estudiante" class="btn btn-outline-warning btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a></td>
                             <td><a href="main.php?aksi=delete&nik=' . $row['numeroIdentificacion'] . '" title="Eliminar estudiante" onclick="return confirm(\'Esta seguro de borrar al Estudiante ' . $row['nombre'] . " " . $row['apellidos'] . '?\')" class="btn btn-outline-danger btn-sm"><span class="fa fa-trash" aria-hidden="true"></span></a></td>
 

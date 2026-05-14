@@ -60,7 +60,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     // Bind result variables
                     mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
                     if(mysqli_stmt_fetch($stmt)){
-                        if(password_verify($password, $hashed_password)){
+                        if($hashed_password !== null && password_verify($password, $hashed_password)){
                             // Password is correct, so start a new session
                             session_start();
                             
@@ -116,19 +116,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 </li>
             </ul>
             <div style="text-align:center;">
-                <img src="images/logoo.png" alt="logo" width="150px" style="text-aling:center;">
+                <img src="images/logoo.png" alt="logo" width="150px" style="text-align:center;">
 
             </div>
             <br>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                    <label style="color:#fff">Usuario</label>
+                    <label style="color:#0e5f89">Usuario</label>
                     <input type="number" name="username" class="form-control" placeholder="Usuario"
                         value="<?php echo $username; ?>">
                     <span class="help-block"><?php echo $username_err; ?></span>
                 </div>
                 <div class="form-group campo <?php echo (!empty($password_err)) ? 'has-error' : ''; ?> flex-nowrap">
-                    <label style="color:#fff">Contraseña</label>
+                    <label style="color:#0e5f89">Contraseña</label>
                     <input type="password" name="password" class="form-control" placeholder="Contraseña" id="password">
                     <span class="help-block"><?php echo $password_err; ?></span>
                 </div>
@@ -137,9 +137,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     <input type="submit" class="btn btn-success" value="Ingresar">
                 </div>
             </form>
-            <div class="container">
-                <div class="title">SIGC</div>
-            </div>
+          
         </div>
 
         <a href="https://agenciaeaglesoftware.com/" target="_blank" class="login__forgot">SIGC &copy; Copyright
@@ -148,7 +146,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" class="login__forgot"><img
                 alt="Licencia Creative Commons" style="border-width:0"
                 src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br /> <a rel="license"
-            href="http://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#ffffff" class="login__forgot">Esta
+            href="http://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#0e5f89" class="login__forgot">Esta
             obra está bajo una Licencia Creative Commons Atribución-NoComercial-SinDerivadas 4.0 Internacional</a>.
 
     </div>
@@ -156,9 +154,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 </body>
 <style>
 body {
-    background-image: url("/images/background.png");
-    background-repeat: no-repeat;
-    background-size: cover;
+    background: radial-gradient(circle at 20% 10%, rgba(15, 142, 207, 0.16), transparent 35%), radial-gradient(circle at 85% 15%, rgba(18, 184, 134, 0.2), transparent 30%), #f2f7fb;
     font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     line-height: 1.25;
@@ -171,7 +167,7 @@ body {
 }
 
 .help-block {
-    color: #ffffff;
+    color: #a0142e;
 }
 
 .login-container {
@@ -183,9 +179,10 @@ body {
     width: 100%;
     max-width: 525px;
     min-height: 680px;
-    background-image: url("/images/medellin.jpg");
-    box-shadow: 0 50px 70px -20px rgba(0, 0, 0, 0.85);
-    background-size: cover;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 30px 70px -28px rgba(20, 56, 82, 0.45);
+    border: 1px solid rgba(21, 74, 104, 0.14);
+    border-radius: 20px;
 
 }
 
@@ -198,15 +195,16 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: radial-gradient(ellipse at left bottom, rgba(1, 184, 253) 0%, rgba(38, 20, 72, .9) 59%, rgba(1, 184, 253) 100%);
-    box-shadow: 0 -20px 150px -20px rgba(0, 0, 0, 0.5);
+    background-image: linear-gradient(120deg, rgba(15, 142, 207, 0.08), rgba(18, 184, 134, 0.04));
+    box-shadow: none;
+    border-radius: 20px;
 }
 
 .form-login {
     position: relative;
     z-index: 1;
     padding-bottom: 4.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    border-bottom: 1px solid rgba(15, 93, 135, 0.2);
 }
 
 .login-nav {
@@ -226,7 +224,7 @@ body {
 
 .login-nav__item a {
     position: relative;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(16, 68, 98, 0.55);
     text-decoration: none;
     text-transform: uppercase;
     font-weight: 500;
@@ -237,7 +235,7 @@ body {
 
 .login-nav__item.active a,
 .login-nav__item a:hover {
-    color: #ffffff;
+    color: #0f6c9e;
     transition: .15s all ease;
 }
 
@@ -245,7 +243,7 @@ body {
     content: '';
     display: inline-block;
     height: 10px;
-    background-color: rgb(255, 255, 255);
+    background-color: rgba(15, 108, 158, 0.25);
     position: absolute;
     right: 100%;
     bottom: -1px;
@@ -256,7 +254,7 @@ body {
 
 .login-nav__item a:hover:after,
 .login-nav__item.active a:after {
-    background-color: rgb(17, 97, 237);
+    background-color: rgb(15, 142, 207);
     height: 2px;
     right: 0;
     bottom: 2px;
@@ -342,7 +340,7 @@ body {
     display: block;
     margin-top: 1rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(11, 74, 108, 0.72);
     font-size: .75rem;
     text-decoration: none;
     position: relative;
@@ -353,16 +351,6 @@ body {
     color: rgb(17, 97, 237);
 }
 
-/*---- ANIMACIÓN TEXTO------ */
-@mixin center() {
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
-}
-
-
 @import url(https://fonts.googleapis.com/css?family=Raleway:400,,800,900);
 
 
@@ -370,9 +358,10 @@ body {
     font-weight: 800;
     color: transparent;
     font-size: 120px;
-    background: url("/images/medellin.jpg") repeat;
+    background: linear-gradient(135deg, #0f8ecf, #12b886);
     background-position: 40% 50%;
     -webkit-background-clip: text;
+    background-clip: text;
     position: relative;
     text-align: center;
     line-height: 90px;
@@ -399,7 +388,6 @@ $(document).ready(function() {
         mouseY = e.pageY;
         traX = ((4 * mouseX) / 570) + 40;
         traY = ((4 * mouseY) / 570) + 50;
-        console.log(traX);
         $(".title").css({
             "background-position": traX + "%" + traY + "%"
         });

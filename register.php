@@ -5,10 +5,17 @@ require_once "conexion.php";
 // Define variables and initialize with empty values
 $username = $password = $confirm_password = "";
 $username_err = $password_err = $confirm_password_err = "";
-$nombre="";
-$dependencia="";
+$nombre = "";
+$dependencia = "";
+$image_err = "";
+$success_msg = "";
+$general_err = "";
+
+$dependenciasPermitidas = array("Ingeniero", "Representante Legal", "Auxiliar");
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+	$nombre = trim($_POST["nombre"] ?? "");
+	$dependencia = trim($_POST["dependencia"] ?? "");
 	
     // Validate username
     if(empty(trim($_POST["username"]))){
@@ -33,8 +40,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     $username_err = "Este usuario ya fue tomado.";
                 } else{
                     $username = trim($_POST["username"]);
-					$nombre = trim($_POST["nombre"]);
-					$dependencia = trim($_POST["dependencia"]);
                 }
             } else{
                 echo "Al parecer algo salió mal.";
@@ -63,32 +68,51 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $confirm_password_err = "No coincide la contraseña.";
         }
     }
+
+    if (empty($nombre)) {
+        $general_err = "Por favor ingresa el nombre completo.";
+    }
+
+    if (!in_array($dependencia, $dependenciasPermitidas, true)) {
+        $general_err = "Selecciona una dependencia valida.";
+    }
+
+    $imgContent = null;
+    if (isset($_FILES['image']) && isset($_FILES['image']['tmp_name']) && $_FILES['image']['tmp_name'] !== '') {
+        $check = @getimagesize($_FILES["image"]["tmp_name"]);
+        if($check !== false){
+            $imgContent = file_get_contents($_FILES['image']['tmp_name']);
+        } else {
+            $image_err = "El archivo de perfil debe ser una imagen valida.";
+        }
+    }
+
     $dataTime = date("Y-m-d H:i:s");
 	
     // Check input errors before inserting in database
-    if(empty($username_err) && empty($password_err) && empty($confirm_password_err)){
-		$check = getimagesize($_FILES["image"]["tmp_name"]);
-		if($check !== false){
-		$image = $_FILES['image']['tmp_name'];
-        $imgContent = addslashes(file_get_contents($image));
+    if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($image_err) && empty($general_err)){
         // Prepare an insert statement
-        $sql = "INSERT INTO users (username, password,nombre,dependencia,url_image,fechaCreacion) VALUES (?, ?,'$nombre','$dependencia','$imgContent','$dataTime')";
-         
-		  }
-		    if($stmt = mysqli_prepare($con, $sql)){
+        $sql = "INSERT INTO users (username, password, nombre, dependencia, url_image, fechaCreacion) VALUES (?, ?, ?, ?, ?, ?)";
+
+		if($stmt = mysqli_prepare($con, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+            mysqli_stmt_bind_param($stmt, "ssssss", $param_username, $param_password, $param_nombre, $param_dependencia, $param_img_content, $param_data_time);
             
             // Set parameters
             $param_username = $username;
             $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+            $param_nombre = $nombre;
+            $param_dependencia = $dependencia;
+            $param_img_content = $imgContent;
+            $param_data_time = $dataTime;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-				echo '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Usted se ha registrado satisfactoriamente.</div>';
+                $success_msg = "Usuario registrado satisfactoriamente.";
+                $username = $password = $confirm_password = "";
+                $nombre = $dependencia = "";
             } else{
-				echo '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Hubo problemas en el registro intenta nuevamente</div>';
+                $general_err = "Hubo problemas en el registro. Intenta nuevamente.";
 
             }
         }
@@ -122,43 +146,50 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     <a href="register.php">Registrarme</a>
                 </li>
             </ul>
+            <?php if (!empty($success_msg)) { ?>
+            <div class="alert alert-success" role="alert"><?php echo htmlspecialchars($success_msg); ?></div>
+            <?php } ?>
+            <?php if (!empty($general_err)) { ?>
+            <div class="alert alert-danger" role="alert"><?php echo htmlspecialchars($general_err); ?></div>
+            <?php } ?>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
                 enctype="multipart/form-data">
                 <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                    <label style="color:#fff">Usuario</label>
+                    <label style="color:#0e5f89">Usuario</label>
                     <input type="number" name="username" class="form-control" placeholder="Documento de identidad"
                         value="<?php echo $username; ?>">
-                    <span class="help-block" style="color:#fff"><?php echo $username_err; ?></span>
+                    <span class="help-block"><?php echo $username_err; ?></span>
                 </div>
                 <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-                    <label style="color:#fff">Contraseña</label>
+                    <label style="color:#0e5f89">Contraseña</label>
                     <input type="password" name="password" class="form-control" placeholder="Contraseña"
                         value="<?php echo $password; ?>">
-                    <span class="help-block" style="color:#fff"><?php echo $password_err; ?></span>
+                    <span class="help-block"><?php echo $password_err; ?></span>
                 </div>
                 <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
-                    <label style="color:#fff">Confirmar Contraseña</label>
+                    <label style="color:#0e5f89">Confirmar Contraseña</label>
                     <input type="password" name="confirm_password" class="form-control" placeholder="Repetir contraseña"
                         value="<?php echo $confirm_password; ?>">
-                    <span class="help-block" style="color:#fff"><?php echo $confirm_password_err; ?></span>
+                    <span class="help-block"><?php echo $confirm_password_err; ?></span>
                 </div>
                 <div class="form-group ">
-                    <label style="color:#fff">Nombre completo</label>
+                    <label style="color:#0e5f89">Nombre completo</label>
                     <input type="text" name="nombre" style="text-transform: capitalize;" placeholder="Nombre completo"
-                        class="form-control" require>
+                        class="form-control" value="<?php echo htmlspecialchars($nombre); ?>" required>
                 </div>
                 <div class="form-group">
-                    <label style="color:#fff">Dependencia</label>
-                    <select class="form-control" name="dependencia" require>
+                    <label style="color:#0e5f89">Dependencia</label>
+                    <select class="form-control" name="dependencia" required>
                         <option value="">DEPENDENCIA</option>
-                        <option value="Ingeniero">INGENIERO</option>
-                        <option value="Representante Legal">REPRESENTANTE LEGAL</option>
-                        <option value="Auxiliar">AUXILIAR</option>
+                        <option value="Ingeniero" <?php echo $dependencia === 'Ingeniero' ? 'selected' : ''; ?>>INGENIERO</option>
+                        <option value="Representante Legal" <?php echo $dependencia === 'Representante Legal' ? 'selected' : ''; ?>>REPRESENTANTE LEGAL</option>
+                        <option value="Auxiliar" <?php echo $dependencia === 'Auxiliar' ? 'selected' : ''; ?>>AUXILIAR</option>
                     </select>
                 </div>
                 <div class="form-group ">
-                    <label style="color:#fff">Seleccione su foto de perfil</label>
-                    <input type="file" name="image" class="btn btn-warning" />
+                    <label style="color:#0e5f89">Seleccione su foto de perfil</label>
+                    <input type="file" name="image" class="form-control-file" accept="image/*" />
+                    <span class="help-block"><?php echo $image_err; ?></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-success" value="Registrarme">
@@ -172,7 +203,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 </body>
 <style>
 body {
-    background-color: #e9e9e9;
+    background: radial-gradient(circle at 20% 10%, rgba(15, 142, 207, 0.16), transparent 35%), radial-gradient(circle at 85% 15%, rgba(18, 184, 134, 0.2), transparent 30%), #f2f7fb;
     font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     line-height: 1.25;
@@ -185,21 +216,22 @@ body {
 }
 
 .help-block {
-    color: #ffffff;
+    color: #a0142e;
 }
 
 .login-container {
     display: block;
     position: relative;
     z-index: 0;
-    margin: 4rem auto 0;
+    margin: 1rem auto 0;
     padding: 5rem 4rem 0 4rem;
     width: 100%;
     max-width: 525px;
     min-height: 680px;
-    background-image: url(images/fondo.png);
-    box-shadow: 0 50px 70px -20px rgba(0, 0, 0, 0.85);
-    background-size: cover;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 30px 70px -28px rgba(20, 56, 82, 0.45);
+    border: 1px solid rgba(21, 74, 104, 0.14);
+    border-radius: 20px;
 }
 
 .login-container:after {
@@ -211,21 +243,22 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: radial-gradient(ellipse at left bottom, rgba(1, 184, 253) 0%, rgba(38, 20, 72, .9) 59%, rgba(1, 184, 253) 100%);
-    box-shadow: 0 -20px 150px -20px rgba(0, 0, 0, 0.5);
+    background-image: linear-gradient(120deg, rgba(15, 142, 207, 0.08), rgba(18, 184, 134, 0.04));
+    box-shadow: none;
+    border-radius: 20px;
 }
 
 .form-login {
     position: relative;
     z-index: 1;
     padding-bottom: 4.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    border-bottom: 1px solid rgba(15, 93, 135, 0.2);
 }
 
 .login-nav {
     position: relative;
     padding: 0;
-    margin: 0 0 6em 1rem;
+    margin: 0 0 3em 1rem;
 }
 
 .login-nav__item {
@@ -239,7 +272,7 @@ body {
 
 .login-nav__item a {
     position: relative;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(16, 68, 98, 0.55);
     text-decoration: none;
     text-transform: uppercase;
     font-weight: 500;
@@ -250,7 +283,7 @@ body {
 
 .login-nav__item.active a,
 .login-nav__item a:hover {
-    color: #ffffff;
+    color: #0f6c9e;
     transition: .15s all ease;
 }
 
@@ -258,7 +291,7 @@ body {
     content: '';
     display: inline-block;
     height: 10px;
-    background-color: rgb(255, 255, 255);
+    background-color: rgba(15, 108, 158, 0.25);
     position: absolute;
     right: 100%;
     bottom: -1px;
@@ -269,7 +302,7 @@ body {
 
 .login-nav__item a:hover:after,
 .login-nav__item.active a:after {
-    background-color: rgb(17, 97, 237);
+    background-color: rgb(15, 142, 207);
     height: 2px;
     right: 0;
     bottom: 2px;
@@ -355,7 +388,7 @@ body {
     display: block;
     margin-top: 3rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(11, 74, 108, 0.72);
     font-size: .75rem;
     text-decoration: none;
     position: relative;

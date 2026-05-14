@@ -1,103 +1,92 @@
-<!DOCTYPE html>
-<!-- Created by CodingLab |www.youtube.com/CodingLabYT-->
-<html lang="en" dir="ltr">
+<link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
 
-<head>
-    <meta charset="UTF-8">
-    <!--<title> Responsive Sidebar Menu  | CodingLab </title>-->
-    <!-- Boxicons CDN Link -->
-    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-
-<body>
-    <div class="sidebar">
-        <div class="logo-details">
-            <a class="navbar-brand icon" href="main.php"><img src="images/logoo.png" width="50px"></a>
-            <div class="logo_name">SIGC</div>
-           
-            <i class='bx bx-menu' id="btn"></i>
-        </div>
-        <ul class="nav-list">
-           
-            <li>
-                <a href="main.php">
-                    <i class='bx bx-grid-alt'></i>
-                    <span class="links_name">Dashboard</span>
-                </a>
-                <span class="tooltip">Dashboard</span>
-            </li>
-            <li>
-                <a href="add_doc.php">
-                    <i class='fas fa-user-shield'></i>
-                    <span class="links_name">Agregar usuario</span>
-                </a>
-                <span class="tooltip">Agregar usuario</span>
-            </li>
-            <li>
-                <a href="add_paciente.php">
-                    <i class='fas fa-users'></i>
-                    <span class="links_name">Crear estudiante</span>
-                </a>
-                <span class="tooltip">Crear estudiante</span>
-            </li>
-          
-            <li>
-                <a href="#">
-                    <i class='fas fa-file-excel'></i>
-                    <span class="links_name">Reporte de estudiante</span>
-                </a>
-                <span class="tooltip">Reporte de estudiante</span>
-            </li>
-            <li>
-                <a href="perfil.php">
-                    <i class='fas fa-user'></i>
-                    <span class="links_name">Perfil</span>
-                </a>
-                <span class="tooltip">Perfil</span>
-            </li>
-
-            <li>
-                <a href="company.php">
-                    <i class='fas fa-users-cog'></i>
-                    <span class="links_name">Configuración</span>
-                </a>
-                <span class="tooltip">Configuración</span>
-            </li>
-            <li class="profile">
-           
-                <a href="https://agenciaeaglesoftware.com/" target="_blank">
-                    <img src="images/eagleLogo.png" width="70px" alt="Eagle Software">
-                    <span class="links_name">Visitar</span>
-                </a>
-                <span class="tooltip">Visitar</span>
-            
-            </li>
-        </ul>
+<?php $rutaActual = basename($_SERVER['PHP_SELF']); ?>
+<div class="sidebar" id="appSidebar">
+    <div class="logo-details">
+        <a class="navbar-brand icon" href="main.php"><img src="images/logoo.png" width="46" alt="SIGC"></a>
+        <div class="logo_name">SIGC</div>
+        <i class="bx bx-menu" id="sidebarToggle"></i>
     </div>
+    <ul class="nav-list">
+        <li>
+            <a href="main.php" class="<?php echo $rutaActual === 'main.php' ? 'is-active' : ''; ?>">
+                <i class="bx bx-grid-alt"></i>
+                <span class="links_name">Dashboard</span>
+            </a>
+            <span class="tooltip">Dashboard</span>
+        </li>
+        <li>
+            <a href="add_doc.php" class="<?php echo $rutaActual === 'add_doc.php' ? 'is-active' : ''; ?>">
+                <i class="fas fa-user-shield"></i>
+                <span class="links_name">Agregar usuario</span>
+            </a>
+            <span class="tooltip">Agregar usuario</span>
+        </li>
+        <li>
+            <a href="add_paciente.php" class="<?php echo $rutaActual === 'add_paciente.php' ? 'is-active' : ''; ?>">
+                <i class="fas fa-users"></i>
+                <span class="links_name">Crear estudiante</span>
+            </a>
+            <span class="tooltip">Crear estudiante</span>
+        </li>
+        <li>
+            <a href="reports.php" class="<?php echo $rutaActual === 'reports.php' ? 'is-active' : ''; ?>">
+                <i class="fas fa-file-excel"></i>
+                <span class="links_name">Reportes</span>
+            </a>
+            <span class="tooltip">Reportes</span>
+        </li>
+        <li>
+            <a href="perfil.php" class="<?php echo $rutaActual === 'perfil.php' ? 'is-active' : ''; ?>">
+                <i class="fas fa-user"></i>
+                <span class="links_name">Perfil</span>
+            </a>
+            <span class="tooltip">Perfil</span>
+        </li>
+        <li>
+            <a href="company.php" class="<?php echo $rutaActual === 'company.php' ? 'is-active' : ''; ?>">
+                <i class="fas fa-users-cog"></i>
+                <span class="links_name">Configuracion</span>
+            </a>
+            <span class="tooltip">Configuracion</span>
+        </li>
+        <li>
+            <a href="smtp_config.php" class="<?php echo $rutaActual === 'smtp_config.php' ? 'is-active' : ''; ?>">
+                <i class="fas fa-envelope-open-text"></i>
+                <span class="links_name">SMTP</span>
+            </a>
+            <span class="tooltip">SMTP</span>
+        </li>
+        <li class="profile">
+            <a href="https://agenciaeaglesoftware.com/" target="_blank" rel="noopener noreferrer">
+                <img src="images/eagleLogo.png" width="42" alt="Eagle Software">
+                <span class="links_name">Visitar</span>
+            </a>
+            <span class="tooltip">Visitar</span>
+        </li>
+    </ul>
+</div>
 
-    <script>
-    let sidebar = document.querySelector(".sidebar");
-    let closeBtn = document.querySelector("#btn");
- 
-    closeBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("open");
-        menuBtnChange(); //calling the function(optional)
-    });
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var sidebar = document.getElementById("appSidebar");
+    var closeBtn = document.getElementById("sidebarToggle");
 
-
-    // following are the code to change sidebar button(optional)
-    function menuBtnChange() {
-        if (sidebar.classList.contains("open")) {
-            closeBtn.classList.replace("bx-menu", "bx-menu-alt-right"); //replacing the iocns class
-        } else {
-            closeBtn.classList.replace("bx-menu-alt-right", "bx-menu"); //replacing the iocns class
-        }
+    if (!sidebar || !closeBtn) {
+        return;
     }
-    </script>
-</body>
 
-</html>
+    closeBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("open");
+        if (sidebar.classList.contains("open")) {
+            closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+        } else {
+            closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+        }
+    });
+});
+</script>
+
 <style>
 /* Google Font Link */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
@@ -264,6 +253,10 @@
     text-decoration: none;
     transition: all 0.4s ease;
     background: #11101D;
+}
+
+.sidebar li a.is-active {
+    background: linear-gradient(135deg, #1abf88, #0f8ecf);
 }
 
 .sidebar li a:hover {

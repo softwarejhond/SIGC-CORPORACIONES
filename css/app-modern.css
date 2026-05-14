@@ -1,0 +1,108 @@
+:root {
+  --sigc-primary: #0f8ecf;
+  --sigc-primary-dark: #0c6fa2;
+  --sigc-accent: #12b886;
+  --sigc-bg: #eef4f8;
+  --sigc-surface: #ffffff;
+  --sigc-text: #1f2a36;
+  --sigc-muted: #607384;
+  --sigc-shadow: 0 12px 28px rgba(18, 40, 58, 0.1);
+  --sigc-radius: 14px;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  font-family: "Outfit", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(15, 142, 207, 0.15), transparent 35%),
+    radial-gradient(circle at 90% 20%, rgba(18, 184, 134, 0.12), transparent 30%),
+    var(--sigc-bg);
+  color: var(--sigc-text);
+}
+
+.navbar {
+  box-shadow: 0 8px 20px rgba(15, 53, 79, 0.15);
+}
+
+.card,
+.table,
+.modal-content,
+.alert,
+.dropdown-menu {
+  border-radius: var(--sigc-radius);
+}
+
+.card,
+.modal-content {
+  border: 1px solid rgba(13, 45, 67, 0.08);
+  box-shadow: var(--sigc-shadow);
+}
+
+.btn-primary,
+.btn-success {
+  border: 0;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--sigc-primary), var(--sigc-primary-dark));
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #1abf88, #139c6f);
+}
+
+.table thead th {
+  border-bottom: 0;
+  background: rgba(15, 142, 207, 0.08);
+  color: #0e5275;
+}
+
+.badge,
+.nav-pills .nav-link,
+.nav-tabs .nav-link {
+  border-radius: 999px;
+}
+
+.nav-tabs .nav-link.active {
+  background: linear-gradient(135deg, rgba(15, 142, 207, 0.18), rgba(18, 184, 134, 0.14));
+  border-color: rgba(15, 142, 207, 0.2);
+  color: #095f8c;
+}
+
+footer {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  margin-top: 24px;
+}
+
+.home-section {
+  animation: sigcFadeIn 0.45s ease;
+}
+
+@keyframes sigcFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-top: 76px;
+  }
+
+  .card {
+    margin-bottom: 10px;
+  }
+}
