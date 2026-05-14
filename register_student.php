@@ -123,52 +123,11 @@ if ($queryActivities) {
     <div class="login-container container">
         <div class="form-login">
       
-
-<<<<<<< HEAD
             <form method="post" class="was-validated" id="form">
                 <h2 style="color:#fff">REGISTRO DE INFORMACIÓN PARA EL SERVICIO SOCIAL</h2>
                 <b style="color:yellow">Tenga en cuenta que todos los campos son obligatorios y serán utilizados
                     exclusivamente para agilizar el proceso de tu servicio social dentro de la Junta de Acción Comunal Marco Fidel Suárez</b>
                 <br><br>
-=======
-            <?php if (!empty($success_msg)) { ?>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Éxito!',
-                        text: '<?php echo htmlspecialchars($success_msg, ENT_QUOTES, "UTF-8"); ?>',
-                        confirmButtonText: 'Aceptar',
-                        confirmButtonColor: '#28a745'
-                    });
-                });
-            </script>
-            <?php } ?>
-
-            <?php if (!empty($errors)) { ?>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '¡Error!',
-                        text: '<?php echo htmlspecialchars($errors[0], ENT_QUOTES, "UTF-8"); ?>',
-                        confirmButtonText: 'Aceptar',
-                        confirmButtonColor: '#dc3545'
-                    });
-                });
-            </script>
-            <?php } ?>
-
-            <form method="post" id="form">
-                <h1 class="title-main text-center">Registro De Informacion Para El Servicio Social</h1>
-                   <h1 class="title-main text-center">Junta de Accion Comunal Marco Fidel Suarez</h1>
-                <br>
-                <p class="subtitle-main">
-                    Todos los campos son obligatorios y seran utilizados exclusivamente para agilizar
-                    el proceso del servicio social dentro de la Junta de Accion Comunal Marco Fidel Suarez.
-                </p>
-<br>
->>>>>>> 09c99c9 (public)
                 <div class="row">
                     <div class="col-lg-6 col-md-12 col-sm-12 px-2 mt-1">
                         <div class="form-group">
